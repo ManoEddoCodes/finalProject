@@ -1,10 +1,11 @@
+require('dotenv').config()
 const mongoose = require('mongoose')
- 
+
+const MONGO_URI = process.env.MONGO_URI
+
 let isConnected = false
  
 const connectDB = async () => {
-  const MONGO_URI = process.env.MONGO_URI;
- 
   if (!MONGO_URI) {
     console.error('[DB] MONGO_URI is not set in the environment.')
     throw new Error('MONGO_URI is not set');
