@@ -57,4 +57,4 @@ function initSockets(io) {
   });
 }
 
-module.exports = initSockets();
+module.exports = initSockets;

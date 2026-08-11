@@ -17,7 +17,7 @@ EventPulse/
   models/        User, Category, Event, Registration, Message
   controllers/   business logic
   routes/        Express routers
-  middlewares/    requireAuth, requireRole, validator, errorHandler
+  middleware/    requireAuth, requireRole, validator, errorHandler
   utils/         appError, asyncHandler
   config/        db.js, socket.js (Socket.io rooms + broadcast)
   tests/
@@ -54,21 +54,21 @@ the Events API — create, list, filter, combined filters, 404, 422
 
 ## API Overview
 
-| Area | Endpoints |
-|---|---|
-| Auth | `POST /api/auth/register`, `POST /api/auth/login` |
-| Categories | `GET/POST /api/categories`, `GET /api/categories/:id` |
-| Events | `GET/POST /api/events`, `GET/PATCH/DELETE /api/events/:id` |
-| Registrations | `POST /api/registrations`, `GET /api/registrations/me`, `DELETE /api/registrations/:id` |
+| Area          | Endpoints                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| Auth          | `POST /api/auth/register`, `POST /api/auth/login`                                            |
+| Categories    | `GET/POST /api/categories`, `GET /api/categories/:id`                                        |
+| Events        | `GET/POST /api/events`, `GET/PATCH/DELETE /api/events/:id`                                   |
+| Registrations | `POST /api/registrations`, `GET /api/registrations/me`, `DELETE /api/registrations/:id`      |
 | Announcements | `GET /api/events/:eventId/messages` (history) + Socket.io `join_event` / `send_announcement` |
-| Ops | `GET /health` |
+| Ops           | `GET /health`                                                                                |
 
 A ready-to-import `postman_collection.json` + `postman_environment.json` document
 every endpoint's request/response shape.
 
 ### Roles
 
-- New accounts always register as `customer`. Only an existing admin can be
+- New accounts always register as `attendee`. Only an existing admin can be
   promoted (e.g. directly in the database, or via the seed script) — there is
   no public endpoint that grants `admin`.
 - `requireAuth` → 401 for missing/expired/tampered tokens.
