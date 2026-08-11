@@ -1,0 +1,172 @@
+{
+  "info": {
+    "name": "EventPulse API",
+    "description": "Full endpoint collection for the EventPulse backend. Uses the 'EventPulse Environment' for {{baseUrl}}, {{token}}, {{adminToken}}, {{eventId}}, {{categoryId}}, {{registrationId}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Attendee\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/categories" }
+        },
+        {
+          "name": "Create Category (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/categories",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Technology\",\n  \"description\": \"Tech events\"\n}" }
+          }
+        },
+        {
+          "name": "Get Category",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/categories/{{categoryId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "List Events (filters/pagination/sort/search)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/events?city=Cairo&page=1&limit=10&sort=-date&search=tech",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"],
+              "query": [
+                { "key": "city", "value": "Cairo" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "sort", "value": "-date" },
+                { "key": "search", "value": "tech" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Event (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/events",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tech Conference\",\n  \"description\": \"A great conference\",\n  \"date\": \"2026-12-01\",\n  \"city\": \"Cairo\",\n  \"capacity\": 50,\n  \"category\": \"{{categoryId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Event",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/events/{{eventId}}" }
+        },
+        {
+          "name": "Update Event (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/events/{{eventId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"capacity\": 75\n}" }
+          }
+        },
+        {
+          "name": "Delete Event (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/events/{{eventId}}"
+          }
+        },
+        {
+          "name": "Get Event Announcement History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/events/{{eventId}}/messages"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registrations",
+      "item": [
+        {
+          "name": "Register for Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/registrations",
+            "body": { "mode": "raw", "raw": "{\n  \"eventId\": \"{{eventId}}\"\n}" }
+          }
+        },
+        {
+          "name": "My Registrations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/registrations/me"
+          }
+        },
+        {
+          "name": "Cancel Registration",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/registrations/{{registrationId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        { "name": "Health Check", "request": { "method": "GET", "url": "{{baseUrl}}/health" } }
+      ]
+    }
+  ]
+}
