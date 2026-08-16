@@ -15,9 +15,9 @@ function initSockets(io) {
       }
     }
 
-    socket.on('join_event', ({ eventId }) => {
+    socket.on('join-event', (eventId) => {    
       if (!eventId) return;
-      socket.join(`event_${eventId}`);
+      socket.join(eventId);                        
     });
 
     socket.on('send_announcement', async ({ eventId, text }) => {

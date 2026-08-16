@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 
 const authRoutes = require("./routes/userRoutes.js");
 const categoryRoutes = require("./routes/categoryRoutes.js");
@@ -9,14 +8,24 @@ const messageRoutes = require("./routes/messageRoutes.js");
 const healthController = require("./controllers/healthController.js");
 const errorHandler = require("./middleware/errorHandler.js");
 const AppError = require("./utils/appError.js");
+const announcementRoutes = require('./routes/announcementRoutes.js');
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+
+const { connectDB } = require('./config/db.js');
+let dbReady = false;
+app.use(async (req, res, next) => {
+  if (!dbReady) {
+    try { await connectDB(); dbReady = true; } catch (err) { return next(err); }
+  }
+  next();
+});
 
 app.get("/health", healthController.getHealth);
 
+app.use('/api/announcements', announcementRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/events", eventRoutes);

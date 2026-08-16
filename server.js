@@ -13,6 +13,8 @@ const io = new Server(server, {
   cors: { origin: '*' },
 });
 
+app.set('io', io);
+
 initSockets(io);
 
 const start = async () => {

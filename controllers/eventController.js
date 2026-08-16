@@ -9,17 +9,16 @@ exports.createEvent = asyncHandler(async (req, res) => {
 });
 
 exports.listEvents = asyncHandler(async (req, res) => {
-  const { category, city, dateFrom, dateTo, search, sort } = req.query;
+  const { category, city, startDate, endDate, search, sortBy, order } = req.query;
 
   const filter = {};
-
   if (category) filter.category = category;
   if (city) filter.city = new RegExp(`^${city}$`, 'i');
 
-  if (dateFrom || dateTo) {
+  if (startDate || endDate) {
     filter.date = {};
-    if (dateFrom) filter.date.$gte = new Date(dateFrom);
-    if (dateTo) filter.date.$lte = new Date(dateTo);
+    if (startDate) filter.date.$gte = new Date(startDate);
+    if (endDate) filter.date.$lte = new Date(endDate);
   }
 
   if (search) {
@@ -33,18 +32,15 @@ exports.listEvents = asyncHandler(async (req, res) => {
   const limit = Math.max(parseInt(req.query.limit, 10) || 10, 1);
   const skip = (page - 1) * limit;
 
-  let sortOption = { date: 1 };
-  if (sort === 'date') sortOption = { date: 1 };
-  else if (sort === '-date') sortOption = { date: -1 };
-  else if (sort === 'registrations') sortOption = { registrationsCount: 1 };
-  else if (sort === '-registrations') sortOption = { registrationsCount: -1 };
+  const allowedSortFields = ['date', 'registrations'];
+  const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'date';
+  const sortDirection = order === 'desc' ? -1 : 1;
+  const sortMap = { date: 'date', registrations: 'registrationsCount' };
+  const sortOption = { [sortMap[sortField]]: sortDirection };
 
   const [events, total] = await Promise.all([
-    Event.find(filter)
-      .populate('category', 'name description')
-      .sort(sortOption)
-      .skip(skip)
-      .limit(limit),
+    Event.find(filter).populate('category', 'name description')
+      .sort(sortOption).skip(skip).limit(limit),
     Event.countDocuments(filter),
   ]);
 
@@ -52,8 +48,8 @@ exports.listEvents = asyncHandler(async (req, res) => {
     status: 'success',
     total,
     page,
+    limit,                            
     totalPages: Math.ceil(total / limit) || 1,
-    results: events.length,
     data: events,
   });
 });

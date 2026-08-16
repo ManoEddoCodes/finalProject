@@ -1,5 +1,5 @@
 const express = require("express");
-const { body } = require("express-validator");
+const { body, param } = require('express-validator');
 const eventController = require("../controllers/eventController.js");
 const requireAuth = require("../middleware/requireAuth.js");
 const requireRole = require("../middleware/requireRole.js");
@@ -54,12 +54,12 @@ router
   .route("/:id")
   .get(eventController.getEvent)
   .patch(
-    requireAuth,
-    requireRole("admin"),
-    eventUpdateValidationRules,
-    validator,
-    eventController.updateEvent,
-  )
+  requireAuth,
+  requireRole('admin'),
+  [param('id').isMongoId().withMessage('A valid event id is required'), ...eventUpdateValidationRules],
+  validate,
+  eventController.updateEvent
+)
   .delete(requireAuth, requireRole("admin"), eventController.deleteEvent);
 
 module.exports = router;
