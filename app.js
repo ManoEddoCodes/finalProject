@@ -1,4 +1,7 @@
 const express = require("express");
+const cors = require("cors");
+const morgan = require('morgan');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const authRoutes = require("./routes/userRoutes.js");
 const categoryRoutes = require("./routes/categoryRoutes.js");
@@ -12,7 +15,10 @@ const announcementRoutes = require('./routes/announcementRoutes.js');
 
 const app = express();
 
+app.use(cors());
+app.use(morgan('dev'));
 app.use(express.json());
+app.use(mongoSanitize());
 
 const { connectDB } = require('./config/db.js');
 let dbReady = false;

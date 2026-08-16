@@ -57,7 +57,7 @@ router
   requireAuth,
   requireRole('admin'),
   [param('id').isMongoId().withMessage('A valid event id is required'), ...eventUpdateValidationRules],
-  validate,
+  validator,
   eventController.updateEvent
 )
   .delete(requireAuth, requireRole("admin"), eventController.deleteEvent);

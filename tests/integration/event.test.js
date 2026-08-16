@@ -89,7 +89,7 @@ describe('Events API', () => {
     const res = await request(app).get('/api/events');
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.results).toBe(1);
+    expect(res.body.data.length).toBe(1);
     expect(res.body.data[0].name).toBe('Event One');
   });
 
@@ -119,7 +119,7 @@ describe('Events API', () => {
     const res = await request(app).get('/api/events').query({ city: 'Cairo' });
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.results).toBe(1);
+    expect(res.body.data.length).toBe(1);
     expect(res.body.data[0].city).toBe('Cairo');
   });
 
@@ -153,7 +153,7 @@ describe('Events API', () => {
       .query({ city: 'Cairo', search: 'React' });
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.results).toBe(1);
+    expect(res.body.data.length).toBe(1);
     expect(res.body.data[0].city).toBe('Cairo');
   });
 
