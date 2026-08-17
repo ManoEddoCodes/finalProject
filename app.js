@@ -27,6 +27,14 @@ app.use(async (req, res, next) => {
   next();
 });
 
+app.get('/', (req, res) => {
+    res.json({
+        message: "Welcome to my eventpulse API",
+        status: "working",
+        version: "1.0.0"
+    });
+});
+
 app.get("/health", healthController.getHealth);
 
 app.use('/api/announcements', announcementRoutes);
